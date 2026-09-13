@@ -4,7 +4,7 @@
 
 ## Live Demo
 
-🚀 **Deployed Application:**
+**Deployed Application: https://replylens-ai-ymjkgcbypzu9y4h4ztbkxk.streamlit.app/**
 
 The application is deployed using Streamlit Community Cloud. The deployed version uses the configured LLM provider through secure platform secrets; API keys are not stored in the GitHub repository.
 

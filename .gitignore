@@ -1,0 +1,13 @@
+# Local environment secrets
+.env
+.env.*
+!.env.example
+
+# Python environments and generated files
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Streamlit local state
+.streamlit/

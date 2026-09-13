@@ -1,5 +1,14 @@
 # ReplyLens AI
 
+
+
+## Live Demo
+
+🚀 **Deployed Application:**
+
+The application is deployed using Streamlit Community Cloud. The deployed version uses the configured LLM provider through secure platform secrets; API keys are not stored in the GitHub repository.
+
+
 **Explainable AI suggested-response generation and evaluation**, built for the
 Hiver AI Email Suggested-Response Challenge.
 
@@ -285,11 +294,13 @@ streamlit run app.py
   proxy too).
 - `LLM_MODEL` — model identifier as expected by your provider.
 
-The application loads a local `.env` file when present and also reads these
-values from the process environment. Existing deployment environment values
-take precedence because `load_dotenv()` does not override them by default.
-Configure the variables through the deployment platform's environment/secrets
-settings, and never commit `.env`; it is ignored by Git.
+The application loads a local `.env` file when present, reads process
+environment variables, and falls back to Streamlit Cloud Secrets when a
+process value is absent. Existing deployment environment values take
+precedence because `load_dotenv()` does not override them by default.
+For Streamlit Cloud, add `LLM_API_KEY`, `LLM_BASE_URL`, and `LLM_MODEL` under
+the app's Secrets settings. Configure secrets through the deployment
+platform, and never commit `.env`; it is ignored by Git.
 
 The dataset (`data/emails.csv`) is checked in, so no setup is needed there;
 regenerate it any time with `python data/generate_dataset.py`.

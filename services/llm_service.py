@@ -32,13 +32,21 @@ class LLMResponse:
 
 class LLMService:
     def __init__(self):
-        self.api_key = os.getenv("LLM_API_KEY", "").strip()
-        self.base_url = os.getenv("LLM_BASE_URL", "https://api.openai.com/v1").rstrip("/")
-        self.model = os.getenv("LLM_MODEL", "gpt-4o-mini").strip()
+        self.api_key = _config_value("LLM_API_KEY")
+        self.base_url = _config_value("LLM_BASE_URL", "https://api.openai.com/v1").rstrip("/")
+        self.model = _config_value("LLM_MODEL", "gpt-4o-mini")
 
     @property
     def is_configured(self) -> bool:
         return bool(self.api_key)
+
+    def configuration_summary(self) -> dict[str, str | bool]:
+        """Return safe configuration details without exposing the API key."""
+        return {
+            "configured": self.is_configured,
+            "model": self.model,
+            "base_url": self.base_url,
+        }
 
     def chat(self, system_prompt: str, user_prompt: str,
               temperature: float = 0.3, max_tokens: int = 700) -> LLMResponse:
@@ -71,3 +79,21 @@ class LLMService:
             return LLMResponse(text="", ok=False, error=f"Request error: {e}")
         except (KeyError, IndexError, ValueError) as e:
             return LLMResponse(text="", ok=False, error=f"Unexpected response shape: {e}")
+
+
+def _streamlit_secret(name: str) -> str:
+    """Read one Streamlit secret without requiring Streamlit runtime context."""
+    try:
+        import streamlit as st
+        return str(st.secrets.get(name, "")).strip()
+    except (FileNotFoundError, KeyError, RuntimeError, TypeError):
+        return ""
+
+
+def _config_value(name: str, default: str = "") -> str:
+    """Prefer process/.env values, then fall back to Streamlit Cloud secrets."""
+    return os.getenv(name, "").strip() or _streamlit_secret(name) or default
+
+
+if __name__ == "__main__":
+    print(LLMService().configuration_summary())
